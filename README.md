@@ -45,10 +45,11 @@ The repository currently contains:
 
 - a PostgreSQL 15+ schema;
 - application access rules;
+- foundational Rust submission types and validation;
 - the working schema and implementation plan;
 - a root-only server update script.
 
-The API, object-storage integration, import pipelines, matching services and machine-learning components are still to be implemented.
+The API, object-storage integration, import pipeline, matching services and machine-learning components are still to be implemented.
 
 ## Design principles
 
@@ -66,10 +67,20 @@ The API, object-storage integration, import pipelines, matching services and mac
 ## Repository structure
 
 ```text
+crates/     Small Rust domain components
 database/   PostgreSQL schema and access policy
 design/     Working schema and implementation plan
 scripts/    Controlled operational scripts
 ```
+
+## FIDBF submissions
+
+The server treats an FIDBF as an opaque object and does not run Ghidra. The
+analyst supplies every FIDBF and associated function column required by the
+submission. The Rust domain crate validates hashes, required values and
+cross-record binary identity before the future import service persists them.
+
+Automatic extraction from an FIDBF is a deferred stretch goal.
 
 Items shown in parentheses in the implementation plan are stretch goals.
 

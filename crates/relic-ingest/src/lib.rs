@@ -387,7 +387,11 @@ fn insert_integrity_entry(
             "INSERT INTO catalogue.integrity
                 (source_id, source_type, record_hash, prev_hash, chain_hash,
                  format_version, created_at, system_signature, system_uid)
-             VALUES ($1, $2, $3, $4, $5, 1, $6, $7, $8)
+             VALUES ($1, $2,
+                     CAST($3 AS text)::catalogue.sha256_hex,
+                     CAST($4 AS text)::catalogue.sha256_hex,
+                     CAST($5 AS text)::catalogue.sha256_hex,
+                     1, $6, $7, $8)
              RETURNING integrity_id",
             &[
                 &manifest.source.source_id,
@@ -773,7 +777,10 @@ fn insert_source_and_batch(
         .execute(
             "INSERT INTO catalogue.batch
                 (batch_id, md5, content_sha256, created_at, analyst_user_id, signature)
-             VALUES ($1,$2,$3,$4,$5,$6)",
+             VALUES ($1,
+                     CAST($2 AS text)::catalogue.md5_hex,
+                     CAST($3 AS text)::catalogue.sha256_hex,
+                     $4,$5,$6)",
             &[
                 &manifest.batch.batch_id,
                 &prepared.batch_md5.to_string(),
@@ -801,7 +808,10 @@ fn insert_binary_and_fidbf(
                  original_filename, format, architecture, bit_width, endianness,
                  platform, abi, object_type, entry_point, image_base, build_id,
                  is_stripped, compiler, created_at, created_by, version, source_id)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,
+             VALUES ($1,$2,
+                     CAST($3 AS text)::catalogue.sha256_hex,
+                     CAST($4 AS text)::catalogue.md5_hex,
+                     $5,$6,$7,$8,$9,$10,$11,$12,$13,
                      CAST($14 AS text)::numeric, CAST($15 AS text)::numeric,
                      $16,$17,$18,$19,$20,$21,$22)",
             &[
@@ -836,7 +846,10 @@ fn insert_binary_and_fidbf(
             "INSERT INTO catalogue.fidbf
                 (fidbf_id, binary_id, storage_path, sha256, md5, created_at,
                  submitted_by_user_id, signature, source_id)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+             VALUES ($1,$2,$3,
+                     CAST($4 AS text)::catalogue.sha256_hex,
+                     CAST($5 AS text)::catalogue.md5_hex,
+                     $6,$7,$8,$9)",
             &[
                 &manifest.fidbf.fidbf_id,
                 &binary.binary_id,

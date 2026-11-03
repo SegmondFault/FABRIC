@@ -103,5 +103,5 @@ The server updater fetches and fast-forwards the shared checkout at `/srv/fabric
 
 ## Licence
 
-FABRIC is licensed under the GNU Affero General Public License v3.0. See
+FABRIC is licensed under the Apache License 2.0. See
 [`LICENSE`](LICENSE).

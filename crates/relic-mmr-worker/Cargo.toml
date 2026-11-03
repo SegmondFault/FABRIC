@@ -1,0 +1,14 @@
+[package]
+name = "relic-mmr-worker"
+version = "0.1.0"
+description = "Merkle Mountain Range checkpoint worker for RELIC"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+relic-crypto = { path = "../relic-crypto" }
+
+[lints]
+workspace = true

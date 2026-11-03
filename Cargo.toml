@@ -1,5 +1,11 @@
 [workspace]
-members = ["crates/relic-domain"]
+members = [
+    "crates/relic-crypto",
+    "crates/relic-domain",
+    "crates/relic-integrity-worker",
+    "crates/relic-mmr-worker",
+    "crates/relic-object-worker",
+]
 resolver = "2"
 
 [workspace.package]

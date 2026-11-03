@@ -19,6 +19,10 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA catalogue
 ALTER DEFAULT PRIVILEGES IN SCHEMA catalogue
     GRANT EXECUTE ON FUNCTIONS TO relic_app;
 
+-- Checkpoints are append-only evidence even though the general application
+-- policy permits updates to ordinary catalogue tables.
+REVOKE UPDATE ON catalogue.mmr_checkpoint FROM relic_app;
+
 RESET ROLE;
 
 ALTER ROLE relic_app IN DATABASE relic

@@ -47,7 +47,9 @@ The repository currently contains:
 - the working schema and implementation plan;
 - a root-only server update script.
 
-The API, object-storage integration, import pipeline, matching services and machine-learning components are still to be implemented.
+The API, object-storage integration, import pipeline, production worker
+adapters, matching services, proof API and machine-learning components are
+still to be implemented.
 
 ## Design principles
 
@@ -89,8 +91,14 @@ The future append-only integrity layer is recorded as a design stub, including
 an eight-step **MMR visual explainer** showing how permanent leaf indexes and
 peaks evolve as records are appended.
 
-See [`docs/integrity-mmr.md`](docs/integrity-mmr.md). This is a specification
-placeholder only; the MMR service and schema are not implemented yet.
+See [`docs/integrity-mmr.md`](docs/integrity-mmr.md). The immutable checkpoint
+schema is defined; the MMR worker and proof service remain planned.
+
+The deliberately separate object, integrity-chain and MMR worker boundaries
+are documented in [`docs/workers.md`](docs/workers.md). Their pure calculation
+and signature code is implemented and tested. The service entry points remain
+fail closed until the database, object-source and key-custody adapters are
+implemented and reviewed.
 
 ## Contributing
 
@@ -122,7 +130,8 @@ The server updater fetches and fast-forwards the shared checkout at `/srv/relic`
 
 Database changes are deliberately applied separately. After updating the
 checkout, run `scripts/apply-database-migrations.sh` as root. It installs the
-MMR checkpoint table once and safely reports if it is already present.
+MMR checkpoint and BSim membership changes once, preserving existing BSim
+objects and associations, and safely reports changes already present.
 
 ## Licence
 

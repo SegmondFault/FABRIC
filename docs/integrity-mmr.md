@@ -1,7 +1,8 @@
-# Planned integrity service and Merkle Mountain Range
+# Integrity service and Merkle Mountain Range
 
-> **Status:** design stub only. RELIC does not yet implement this service, its
-> database records, its command-line controls or its publication states.
+> **Status:** the pure Rust hashing, frontier and checkpoint-signing core is
+> implemented. The production PostgreSQL adapter, key-custody integration,
+> proof API, service supervision and publication states remain future work.
 
 This page records the intended boundary for RELIC's future append-only
 integrity layer. It is deliberately descriptive rather than executable so the
@@ -21,8 +22,9 @@ identifier and does not need to be copied into a parallel table.
 
 Purple nodes in the diagrams are the current peaks. The checkpoint commitment
 is derived by combining those peaks in an exact, versioned left-to-right order.
-The pictures explain topology only; the precise byte encoding and peak-bagging
-construction remain an explicit design decision.
+The pictures explain topology. The version-1 construction uses each integrity
+row's `chain_hash` as leaf input and commits to the zero-based leaf index,
+left/right order, peak positions and tree heights.
 
 ### 1. Start with leaf 0
 
@@ -76,12 +78,13 @@ tree. This is analogous to carrying bits in a binary counter.
 The same pattern continues indefinitely. A leaf is appended once; only the
 right-hand frontier changes.
 
-## Intended component boundary
+## Component boundary
 
 The design separates the tree algorithm from storage and operations:
 
-- **`relic-mmr`** will be a pure Rust library for append operations, peak
-  calculation, roots and proofs. It must not know about PostgreSQL.
+- **`relic-mmr-worker`** contains the current pure Rust append, peak,
+  commitment and checkpoint-signing implementation. It knows nothing about
+  PostgreSQL. Proofs remain future work.
 - **`relic-postgres`** will adapt RELIC records and MMR state to PostgreSQL.
 - **`relic-integrityd`** will be the normal long-running worker. It will catch
   up new leaves, persist nodes and checkpoints, and request signatures.
@@ -107,22 +110,28 @@ notification can be lost.
   `mmr_checkpoint.last_integrity_id`. Every earlier covered leaf is reached by
   following `prev_hash` back to the genesis row.
 
-## Hashing constraints
+## Version-1 hashing constraints
 
-The implementation must define and version all of the following before any
-checkpoint is treated as evidence:
+The implemented calculation fixes these rules:
 
-- the canonical bytes representing each covered RELIC record;
-- the digest algorithm;
-- separate hash domains for leaves, internal nodes and peak bagging;
-- unambiguous left/right child ordering;
-- the exact ordered construction that combines peaks;
-- the format version carried by a checkpoint; and
-- deterministic proof encoding and verification rules.
+- a leaf consumes the committed integrity row's `chain_hash`, not a fresh copy
+  of the source record;
+- SHA-256 is the digest algorithm;
+- leaf, internal-node, peak commitment, checkpoint and signature inputs use
+  distinct versioned domain tags;
+- variable fields are length-prefixed, integers are fixed-width big-endian,
+  and children and peaks are encoded left to right;
+- a leaf commits to its zero-based index;
+- a node commits to its start index and resulting height as well as both child
+  hashes;
+- the commitment commits to `leaf_count` and every ordered peak's start index,
+  height and hash; and
+- the Ed25519 system signature covers the format, newest integrity ID, leaf
+  count, peaks, commitment, system identity and explicit timestamp.
 
 Changing any of these is a format migration, not a silent implementation
 detail. No leaf duplication or invented padding leaf is used to handle an odd
-count.
+count. Deterministic proof encoding remains future work.
 
 ## Database responsibilities
 
@@ -138,6 +147,10 @@ The existing `integrity` table remains unchanged. One additional table,
 - `system_uid` and `system_signature` identify and authenticate the system
   account that created the checkpoint; and
 - `created_at` records when it was committed.
+
+For a given format version, both `last_integrity_id` and `leaf_count` are
+unique. A checkpoint therefore identifies one unambiguous extent of the
+integrity chain.
 
 Hashes, signatures, source identities and timestamps from the integrity chain
 are not copied. The MMR is a binary-tree structure, but completed internal
@@ -170,9 +183,11 @@ A checkpoint commits to a specific leaf count and ordered set of peaks. The
 private signing key remains outside PostgreSQL; PostgreSQL stores the
 commitment, signature and public signing-key identity required for verification.
 
-Checkpoint creation must be atomic from RELIC's point of view. Records may have
-an intermediate state such as `accepted_pending_checkpoint`; only a completed
-checkpoint can move covered records to `sealed`.
+Checkpoint insertion is atomic, but checkpoint creation is intentionally not
+part of source-record admission. A record is authoritative only after its
+object digest, integrity-chain hash and integrity system signature have been
+committed in one database transaction. MMR status is a separate derived state;
+a delayed checkpoint does not weaken the integrity admission rule.
 
 ## Verification and recovery
 
@@ -187,15 +202,13 @@ the meaning of an earlier signed checkpoint.
 
 ## Decisions still open
 
-- Which record types enter this MMR, and whether there is one range or several.
-- Exact canonical serialization and domain-separation constants.
-- Exact peak-bagging construction.
 - Checkpoint cadence: every append, time-based, count-based or explicit batch.
-- Signature algorithm, key custody and rotation procedure.
 - Whether publication waits for sealing or exposes a visible pending state.
 - Which internal nodes are retained and whether safe pruning is ever allowed.
 - Proof API, proof encoding and proof-retention requirements.
+- Production key custody and rotation procedure.
 - Monitoring thresholds and the operational recovery procedure.
 
-No implementation should quietly settle one of these choices. The selected
-behaviour belongs in a reviewed format specification and regression vectors.
+No runtime adapter should quietly settle one of these choices. The selected
+behaviour belongs in a reviewed operational specification and regression
+vectors.

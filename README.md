@@ -10,9 +10,7 @@ It combines BSim data, FIDBF records, reproducible provenance and a small suppor
 
 Initial corpus I hope to be nearly every C library, HPC willing. Primarily I'm generating from per lane (arch, os, compiler, optimisation, starsign...)  builds of public available source code via FIDBF-gen, to create a provenance tracked ground truth, though I hope to incorporate some ecological bins from online sources, malicious and otherwise.
 
-FABRIC does **not** store binary files.
-
-## What a bounded assertion means
+## Bounding bounded assertion means
 
 An assertion made through FABRIC is limited by:
 

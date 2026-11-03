@@ -2,6 +2,7 @@
 members = [
     "crates/relic-crypto",
     "crates/relic-domain",
+    "crates/relic-ingest",
     "crates/relic-integrity-worker",
     "crates/relic-mmr-worker",
     "crates/relic-object-worker",

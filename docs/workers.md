@@ -5,10 +5,28 @@ small, auditable responsibility. PostgreSQL stores and constrains results; it
 does not launch worker processes and does not hold a private signing key.
 
 The hashing, integrity-envelope and MMR-frontier libraries are implemented and
-covered by deterministic tests. The service binaries remain fail closed until
-their database/object-source adapters, runtime identities and key-custody
-configuration are reviewed. They must not be admitted merely because their
-pure calculation code builds.
+covered by deterministic tests. The first FIDBF path includes separate
+client-side signing and server-side PostgreSQL ingestion binaries. MMR service
+entry points remain fail closed until their database adapters, runtime
+identities and key-custody configuration are reviewed. They must not be
+admitted merely because their pure calculation code builds.
+
+## FIDBF submission boundary
+
+`relic-sign-fidbf` runs on the analyst's machine. It verifies the exact FIDBF
+bytes against the unsigned manifest, loads the analyst's private key locally,
+and emits a signed manifest containing no private material or local object
+path.
+
+`relic-ingest-fidbf` runs at the trusted ingestion boundary. It receives that
+signed manifest plus the separately staged FIDBF, looks up the analyst's public
+key in `catalogue.user_public`, verifies all analyst signatures, and admits the
+complete source/batch/binary/FIDBF/function set with one integrity entry in one
+serializable transaction. Its command line has no analyst-private-key option.
+
+The integrity-system private key is different: it belongs to the narrowly
+scoped server worker and signs the RELIC integrity envelope after the analyst
+submission has verified.
 
 ## Object worker
 

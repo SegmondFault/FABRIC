@@ -1,0 +1,38 @@
+[package]
+name = "relic-ingest"
+version = "0.1.0"
+description = "Atomic signed FIDBF ingestion adapter for RELIC"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "relic-ingest-fidbf"
+path = "src/main.rs"
+
+[[bin]]
+name = "relic-sign-fidbf"
+path = "src/bin/sign-fidbf.rs"
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.5", features = ["derive", "env"] }
+md-5 = "0.11.0"
+postgres = { version = "0.19", features = ["with-chrono-0_4", "with-uuid-1"] }
+relic-crypto = { path = "../relic-crypto" }
+relic-domain = { path = "../relic-domain" }
+relic-integrity-worker = { path = "../relic-integrity-worker" }
+relic-object-worker = { path = "../relic-object-worker" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.11.1"
+thiserror = "2.0"
+uuid = { version = "1.18", features = ["serde", "v4"] }
+zeroize = "1.8"
+
+[dev-dependencies]
+tempfile = "3.23"
+
+[lints]
+workspace = true

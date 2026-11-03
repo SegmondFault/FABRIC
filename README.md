@@ -44,12 +44,14 @@ The repository currently contains:
 - a PostgreSQL 15+ schema;
 - application access rules;
 - foundational Rust submission types and validation;
+- client-side analyst signing and atomic PostgreSQL FIDBF ingestion;
 - the working schema and implementation plan;
 - a root-only server update script.
 
-The API, object-storage integration, import pipeline, production worker
-adapters, matching services, proof API and machine-learning components are
-still to be implemented.
+The API, object-storage integration, matching services, proof API and
+machine-learning components are still to be implemented. The first FIDBF
+ingestion adapter is implemented as a reviewed CLI boundary; it is not yet the
+public API.
 
 ## Design principles
 
@@ -78,8 +80,13 @@ scripts/    Controlled operational scripts
 
 The server treats an FIDBF as an opaque object and does not run Ghidra. The
 analyst supplies every FIDBF and associated function column required by the
-submission. The Rust domain crate validates hashes, required values and
-cross-record binary identity before the future import service persists them.
+submission. The analyst signs the canonical submission on their own machine;
+the server receives no analyst private key. The Rust ingestion adapter verifies
+the object, signatures, hashes, required values and cross-record binary
+identity before persisting the complete admission atomically.
+
+See [`docs/api-handoff.md`](docs/api-handoff.md) for the BYO-key registration
+contract and the atomic API boundary.
 
 Automatic extraction from an FIDBF is a deferred stretch goal.
 
@@ -96,9 +103,9 @@ schema is defined; the MMR worker and proof service remain planned.
 
 The deliberately separate object, integrity-chain and MMR worker boundaries
 are documented in [`docs/workers.md`](docs/workers.md). Their pure calculation
-and signature code is implemented and tested. The service entry points remain
-fail closed until the database, object-source and key-custody adapters are
-implemented and reviewed.
+and signature code is implemented and tested. FIDBF admission now has a client
+signer and PostgreSQL adapter; MMR service entry points remain fail closed until
+their database and key-custody adapters are implemented and reviewed.
 
 ## Contributing
 

@@ -1,0 +1,57 @@
+{
+  "analyst_user_id": "00000000-0000-0000-0000-000000000001",
+  "source": {
+    "source_id": "00000000-0000-0000-0000-000000000002",
+    "name": "example source",
+    "source_type": "FIDBF",
+    "reference": "https://example.invalid/source",
+    "snapshot_version": "1.0",
+    "retrieved_at": "2026-11-03T12:00:00Z",
+    "is_ecological": false
+  },
+  "batch": { "batch_id": "00000000-0000-0000-0000-000000000003" },
+  "binary": {
+    "binary_id": "00000000-0000-0000-0000-000000000004",
+    "content_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "content_md5": "22222222222222222222222222222222",
+    "size_bytes": 123,
+    "original_filename": "example.o",
+    "format": "ELF",
+    "architecture": "x86_64",
+    "bit_width": 64,
+    "endianness": "little",
+    "platform": "linux",
+    "abi": null,
+    "object_type": "relocatable",
+    "entry_point": null,
+    "image_base": null,
+    "build_id": null,
+    "is_stripped": null,
+    "compiler": "gcc-12.3.0",
+    "version": "1.0"
+  },
+  "fidbf": {
+    "fidbf_id": "00000000-0000-0000-0000-000000000005",
+    "storage_path": "objects/example.fidbf",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "md5": "44444444444444444444444444444444"
+  },
+  "functions": [
+    {
+      "function_id": "00000000-0000-0000-0000-000000000006",
+      "name": "example_function",
+      "full_hash": "0123456789abcdef",
+      "specific_hash": "fedcba9876543210",
+      "file_offset": null,
+      "virtual_address": "4096",
+      "size_bytes": 32,
+      "section_name": ".text",
+      "symbol_name": "example_function",
+      "mangled_name": null,
+      "demangled_name": null,
+      "is_import": false,
+      "is_export": false,
+      "is_thunk": false
+    }
+  ]
+}

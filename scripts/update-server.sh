@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+if (( EUID != 0 )); then
+    echo "This updater must be run as root." >&2
+    exit 1
+fi
+
 fabric_dir="${FABRIC_DIR:-/srv/fabric}"
 
 if [[ ! -d "$fabric_dir/.git" ]]; then

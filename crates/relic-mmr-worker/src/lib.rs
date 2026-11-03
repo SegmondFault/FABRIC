@@ -266,11 +266,11 @@ pub fn checkpoint_postgres(
         .isolation_level(IsolationLevel::Serializable)
         .start()
         .map_err(StoreError::Database)?;
+    let lock_scope = format!("RELIC:mmr-sequencer:v1:{format_version}");
     transaction
         .query_one(
-            "SELECT pg_advisory_xact_lock(hashtextextended(
-                 'RELIC:mmr-sequencer:v1:' || $1::text, 0))",
-            &[&format_version_i32],
+            "SELECT pg_advisory_xact_lock(hashtextextended($1, 0))",
+            &[&lock_scope],
         )
         .map_err(StoreError::Database)?;
 

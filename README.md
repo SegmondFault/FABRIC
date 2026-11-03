@@ -67,6 +67,7 @@ The API, object-storage integration, import pipeline, matching services and mach
 ```text
 crates/     Small Rust domain components
 database/   PostgreSQL schema and access policy
+docs/       Design notes and visual explainers
 design/     Working schema and implementation plan
 scripts/    Controlled operational scripts
 ```
@@ -81,6 +82,15 @@ cross-record binary identity before the future import service persists them.
 Automatic extraction from an FIDBF is a deferred stretch goal.
 
 Items shown in parentheses in the implementation plan are stretch goals.
+
+## Planned integrity service
+
+The future append-only integrity layer is recorded as a design stub, including
+an eight-step **MMR visual explainer** showing how permanent leaf indexes and
+peaks evolve as records are appended.
+
+See [`docs/integrity-mmr.md`](docs/integrity-mmr.md). This is a specification
+placeholder only; the MMR service and schema are not implemented yet.
 
 ## Contributing
 

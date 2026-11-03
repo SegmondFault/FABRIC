@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="520" viewBox="0 0 1450 520" role="img" aria-labelledby="title desc">
+<title id="title">MMR after 6 leaves</title>
+<desc id="desc">Merkle Mountain Range containing leaf indexes zero through 5. Current peaks are highlighted.</desc>
+<rect width="1450" height="520" rx="22" fill="#f8fafc"/>
+<text x="44" y="50" font-family="system-ui, sans-serif" font-size="29" font-weight="700" fill="#172033">Step 6: 6 leaves</text>
+<text x="44" y="82" font-family="system-ui, sans-serif" font-size="17" fill="#566175">Append leaf index 5 · indexes are permanent.</text>
+<rect x="490" y="25" width="470" height="72" rx="18" fill="#172033"/>
+<text x="725" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="17" font-weight="700" fill="#ffffff">CHECKPOINT COMMITMENT</text>
+<text x="725" y="78" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#cbd5e1">ordered bag of the current peaks</text>
+<path d="M 297.5 219 C 297.5 180, 725 135, 725 98" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="7 7" opacity="0.75"/>
+<path d="M 702.5 311 C 702.5 272, 725 135, 725 98" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="7 7" opacity="0.75"/>
+<line x1="162.5" y1="362" x2="95" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="162.5" y1="362" x2="230" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="432.5" y1="362" x2="365" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="432.5" y1="362" x2="500" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="702.5" y1="362" x2="635" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="702.5" y1="362" x2="770" y2="405" stroke="#8da0b8" stroke-width="3"/>
+<line x1="297.5" y1="270" x2="162.5" y2="313" stroke="#8da0b8" stroke-width="3"/>
+<line x1="297.5" y1="270" x2="432.5" y2="313" stroke="#8da0b8" stroke-width="3"/>
+<circle cx="95" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="95" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">0</text>
+<text x="95" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 0</text>
+<circle cx="230" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="230" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">1</text>
+<text x="230" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 1</text>
+<circle cx="365" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="365" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">2</text>
+<text x="365" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 2</text>
+<circle cx="500" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="500" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">3</text>
+<text x="500" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 3</text>
+<circle cx="635" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="635" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">4</text>
+<text x="635" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 4</text>
+<circle cx="770" cy="430" r="30" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="770" y="437" text-anchor="middle" font-family="ui-monospace, monospace" font-size="21" font-weight="700" fill="#172033">5</text>
+<text x="770" y="483" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#566175">leaf 5</text>
+<rect x="114.5" y="313" width="96" height="50" rx="16" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="162.5" y="344" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="#172033">[0–1]</text>
+<rect x="384.5" y="313" width="96" height="50" rx="16" fill="#dbeafe" stroke="#2474c6" stroke-width="3"/>
+<text x="432.5" y="344" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="#172033">[2–3]</text>
+<rect x="654.5" y="313" width="96" height="50" rx="16" fill="#ede9fe" stroke="#8b5cf6" stroke-width="5"/>
+<text x="702.5" y="344" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="#172033">[4–5]</text>
+<text x="702.5" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#7c3aed">PEAK</text>
+<rect x="249.5" y="221" width="96" height="50" rx="16" fill="#ede9fe" stroke="#8b5cf6" stroke-width="5"/>
+<text x="297.5" y="252" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="#172033">[0–3]</text>
+<text x="297.5" y="208" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#7c3aed">PEAK</text>
+<rect x="1180" y="368" width="225" height="102" rx="16" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+<text x="1202" y="398" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#566175">CURRENT PEAKS</text>
+<text x="1202" y="430" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="#7c3aed">[0–3] + [4–5]</text>
+<text x="1202" y="455" font-family="system-ui, sans-serif" font-size="13" fill="#566175">left-to-right order</text>
+</svg>

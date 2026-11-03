@@ -14,9 +14,10 @@ leaf indexes and completed subtrees remain stable as the dataset grows.
 
 ## MMR visual explainer
 
-Every accepted record receives a permanent, zero-based `leaf_index`. The
-index is its position in the append-only integrity history, not a database ID,
-timestamp or object identifier.
+Each existing `catalogue.integrity` row is an MMR leaf. Its zero-based leaf
+index is its ordinal position when the non-forking hash chain is followed from
+the genesis row. The index is not a database ID, timestamp or source-record
+identifier and does not need to be copied into a parallel table.
 
 Purple nodes in the diagrams are the current peaks. The checkpoint commitment
 is derived by combining those peaks in an exact, versioned left-to-right order.
@@ -96,15 +97,15 @@ notification can be lost.
 
 ## Leaf-index constraints
 
+- `catalogue.integrity` remains the authoritative system-signed linear hash
+  chain; the MMR is a derived overlay and does not replace or modify it.
 - Leaf indexes begin at `0` and increase contiguously.
 - An assigned index is immutable and is never reused.
-- The index orders the integrity history; it does not replace the record's
-  normal RELIC identifier.
-- Allocation and insertion occur in the same database transaction.
-- The allocator is a locked state record, not an ordinary sequence, so a
-  rolled-back transaction does not create a gap.
-- Concurrent submissions must serialize only the small allocation boundary,
-  not the entire submission pipeline.
+- The existing `prev_hash` relationship supplies the order. The database's
+  single-genesis and single-successor constraints prevent forks.
+- A checkpoint points to its newest covered row through
+  `mmr_checkpoint.last_integrity_id`. Every earlier covered leaf is reached by
+  following `prev_hash` back to the genesis row.
 
 ## Hashing constraints
 
@@ -125,31 +126,40 @@ count.
 
 ## Database responsibilities
 
-The future schema is expected to represent four concepts. Names are
-provisional:
+The existing `integrity` table remains unchanged. One additional table,
+`mmr_checkpoint`, stores each immutable signed checkpoint:
 
-- **integrity leaf** — the immutable leaf index, covered record identity,
-  canonical-record digest and acceptance time;
-- **MMR node** — persisted internal nodes required to resume, prove or verify;
-- **MMR state/peaks** — the next leaf index and current ordered frontier;
-- **MMR checkpoint** — leaf count, commitment, format version, signature,
-  signing-key identity and creation time.
+- `last_integrity_id` is a foreign key to the newest covered integrity row;
+- `leaf_count` states how many chain rows are covered from genesis through that
+  row and is verified by walking the chain;
+- `peaks` is the ordered, inspectable JSON representation of the current MMR
+  frontier;
+- `commitment` is the digest derived from those peaks under `format_version`;
+- `system_uid` and `system_signature` identify and authenticate the system
+  account that created the checkpoint; and
+- `created_at` records when it was committed.
 
-The database must enforce uniqueness, immutability and foreign-key integrity.
-It must not claim that a record is sealed until the checkpoint covering that
-leaf has been committed successfully.
+Hashes, signatures, source identities and timestamps from the integrity chain
+are not copied. The MMR is a binary-tree structure, but completed internal
+nodes are initially recomputed or carried in worker memory rather than stored
+as a second permanent tree. A node cache may be introduced later if proof or
+rebuild performance requires it; it would remain disposable derived state.
+
+The database must enforce checkpoint immutability, foreign-key integrity, an
+active system signing identity and agreement between `leaf_count` and the
+referenced hash-chain extent.
 
 ## Worker behaviour
 
 Only one active sequencer may advance an MMR. The proposed worker will use a
-PostgreSQL advisory lock, read leaves in explicit `leaf_index` order, and apply
-each append transactionally and idempotently.
+PostgreSQL advisory lock and read leaves by following the integrity chain from
+the latest checkpoint's `last_integrity_id`.
 
-On startup or after a notification it will compare durable leaves with durable
-MMR state and catch up. It must stop rather than advance if stored peaks do not
-match the state it independently expects. A crash between attempts must be
-safe: restarting repeats or resumes work without changing an already committed
-result.
+On startup or after a notification it will load the latest checkpoint's peaks,
+follow new integrity successors, and catch up. It must stop rather than advance
+if the stored checkpoint does not match an independent reconstruction. A crash
+between attempts must be safe: restarting repeats or resumes work without
+changing an already committed result.
 
 The service should run under an unprivileged `relic` operating-system account.
 Its database permissions should be limited to the integrity records it needs.

@@ -120,6 +120,10 @@ Approved changes are merged into `main`.
 
 The server updater fetches and fast-forwards the shared checkout at `/srv/relic`. It refuses to run as a non-root user or when the server checkout contains uncommitted changes.
 
+Database changes are deliberately applied separately. After updating the
+checkout, run `scripts/apply-database-migrations.sh` as root. It installs the
+MMR checkpoint table once and safely reports if it is already present.
+
 ## Licence
 
 RELIC is licensed under the Apache License 2.0. See

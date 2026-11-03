@@ -21,6 +21,7 @@ An assertion made through FABRIC is limited by:
 - the reproducibility of the analysis;
 - the strength of the observed function relationships;
 - the confidence and limitations of any model involved.
+- Estimations on the distinguishability of a specific or full (fidb) hash (yes they collide - though rarely and usually inconsequentially) and BSIMs
 
 The system should preserve the evidence behind an assertion so that another analyst can inspect it, reproduce it and reach their own conclusion.
 

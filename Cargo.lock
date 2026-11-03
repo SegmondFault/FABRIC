@@ -1154,6 +1154,8 @@ dependencies = [
  "chrono",
  "fallible-iterator",
  "postgres-protocol",
+ "serde_core",
+ "serde_json",
  "uuid",
 ]
 
@@ -1309,7 +1311,15 @@ dependencies = [
 name = "relic-mmr-worker"
 version = "0.1.0"
 dependencies = [
+ "chrono",
+ "clap",
+ "postgres",
  "relic-crypto",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "uuid",
+ "zeroize",
 ]
 
 [[package]]

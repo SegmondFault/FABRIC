@@ -6,10 +6,10 @@ does not launch worker processes and does not hold a private signing key.
 
 The hashing, integrity-envelope and MMR-frontier libraries are implemented and
 covered by deterministic tests. The first FIDBF path includes separate
-client-side signing and server-side PostgreSQL ingestion binaries. MMR service
-entry points remain fail closed until their database adapters, runtime
-identities and key-custody configuration are reviewed. They must not be
-admitted merely because their pure calculation code builds.
+client-side signing and server-side PostgreSQL ingestion binaries. The MMR now
+has a one-shot PostgreSQL reconciliation command, `relic-checkpoint-mmr`; an
+always-on service still requires reviewed service supervision, runtime identity
+and production key custody.
 
 ## FIDBF submission boundary
 
@@ -74,9 +74,14 @@ unreferenced immutable object, which is safe for a later audited cleanup.
 
 ## MMR worker
 
-`relic-mmr-worker` consumes ordered integrity-chain rows, performs
+`relic-checkpoint-mmr` consumes ordered integrity-chain rows, performs
 domain-separated leaf, internal-node and peak-commitment hashing, and inserts
 an immutable signed `mmr_checkpoint`. It does not change the integrity chain.
+
+Every invocation rebuilds the chain from genesis and strictly verifies the
+latest stored frontier, commitment and signature before advancing. If the
+checkpoint already covers the current chain, the verified result is returned
+without another insertion.
 
 Only one checkpoint sequencer may advance a format version at a time. The
 worker must be able to reconstruct and compare the expected frontier before it

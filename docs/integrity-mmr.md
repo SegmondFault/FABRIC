@@ -82,10 +82,12 @@ right-hand frontier changes.
 
 The design separates the tree algorithm from storage and operations:
 
-- **`relic-mmr-worker`** contains the current pure Rust append, peak,
-  commitment and checkpoint-signing implementation. It knows nothing about
-  PostgreSQL. Proofs remain future work.
-- **`relic-postgres`** will adapt RELIC records and MMR state to PostgreSQL.
+- **`relic-mmr-worker`** contains the Rust append, peak, commitment and
+  checkpoint-signing implementation plus the fail-closed PostgreSQL
+  reconciler exposed as `relic-checkpoint-mmr`. Proofs remain future work.
+- **`relic-checkpoint-mmr`** is the current explicit one-shot operational
+  entry point. It independently rebuilds the integrity chain, verifies the
+  latest checkpoint, signs any advanced frontier and inserts once.
 - **`relic-integrityd`** will be the normal long-running worker. It will catch
   up new leaves, persist nodes and checkpoints, and request signatures.
 - **`relicctl`** will provide explicit status, verification, dry-run rebuild,
@@ -164,15 +166,16 @@ referenced hash-chain extent.
 
 ## Worker behaviour
 
-Only one active sequencer may advance an MMR. The proposed worker will use a
-PostgreSQL advisory lock and read leaves by following the integrity chain from
-the latest checkpoint's `last_integrity_id`.
+Only one active sequencer may advance an MMR. The current worker uses a
+format-scoped PostgreSQL advisory lock and independently reconstructs the
+complete ordered frontier from genesis before it advances the latest
+checkpoint.
 
-On startup or after a notification it will load the latest checkpoint's peaks,
-follow new integrity successors, and catch up. It must stop rather than advance
-if the stored checkpoint does not match an independent reconstruction. A crash
-between attempts must be safe: restarting repeats or resumes work without
-changing an already committed result.
+It loads the latest checkpoint's peaks, registered system identity and
+signature and compares them with that reconstruction. It stops rather than
+advance if they diverge. An exact retry is idempotent: a fully verified current
+checkpoint is returned without inserting another row. A crash between attempts
+is safe because signing and insertion occur in one serializable transaction.
 
 The service should run under an unprivileged `relic` operating-system account.
 Its database permissions should be limited to the integrity records it needs.

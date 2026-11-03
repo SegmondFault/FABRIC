@@ -107,6 +107,14 @@ The corresponding public key remains in `catalogue.user_public`. Integrity and
 MMR duties should use distinct system accounts and keys so either authority can
 be replaced without impersonating the other.
 
+For every analyst- or moderator-signed operation, the worker must resolve the
+claimed User ID to its immutable `catalogue.user_public.public_key` and verify
+the operation's domain-separated canonical payload with that exact key. It
+must never trust a request-supplied verification key, search for some other key
+that happens to verify, or treat login authentication as proof that a payload
+was signed. Identity, active role, registered key, payload and signature are a
+single fail-closed admission check performed inside the transaction.
+
 ## Admission and checkpoint timing
 
 Integrity admission is synchronous and complete before a record is accepted.

@@ -60,6 +60,48 @@ The API must verify proof-of-possession at registration and signatures at every
 submission. Authentication alone is not a substitute for verifying the
 submission signature.
 
+### Mandatory identity-to-signature check
+
+Every signed write must carry a claimed RELIC User ID. Before admitting any
+row, the trusted ingestion boundary must:
+
+1. load that exact User ID from `catalogue.user_public`;
+2. reject an unknown or revoked account;
+3. require the role and owner type authorised for the operation;
+4. require a 32-byte Ed25519 public key;
+5. reconstruct the versioned, domain-separated canonical bytes for the
+   operation; and
+6. verify the supplied signature with the public key registered against that
+   User ID.
+
+Success means all six checks passed. A valid signature made by a different
+registered user is still a rejection: the claimed User ID, registered public
+key and signing private key must describe the same identity. The API must not
+accept a public key supplied in the request as a substitute for the registered
+key, and it must not fall back to “any known key that verifies”.
+
+This rule applies independently to FIDBF, BSim and provenance submissions,
+registration proof-of-possession, analyst revocation requests, moderator
+decisions, user flags and analyst responses. Each operation needs its own
+versioned domain tag and canonical field set. Reusing a valid signature from a
+different operation or format must fail.
+
+The current Rust FIDBF ingester is the executable reference: it performs the
+identity lookup, role/revocation checks and source, batch and FIDBF signature
+verification inside the same serializable transaction. Future API routes and
+the BSim adapter must call an equivalent trusted verifier before inserting any
+authoritative row; checking only that `signature` is non-empty is insufficient.
+
+Required negative acceptance tests for every signed route are:
+
+- correct User ID and matching key succeeds;
+- correct User ID with a signature from another key fails;
+- another User ID with the otherwise-valid signature fails;
+- altered canonical content fails;
+- a signature copied from another operation/domain fails;
+- an unknown, revoked or incorrectly-role-scoped identity fails; and
+- every failure leaves the authoritative and integrity tables unchanged.
+
 ## Atomic admission
 
 One FIDBF admission is one atomic unit:

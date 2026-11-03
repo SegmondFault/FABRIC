@@ -1,10 +1,10 @@
 Whoever you are, you're here very early... As its early, but I didn't want to leave this blank I had a chabot generate the below, cursed at it, and then rewrote it. Mostly. Consider yourself forewarned.
 
-# FABRIC
+# RELIC
 
-**Function and Binary Reproducibility & Integrity Corpus**
+**Reproducible Evidence for Lineage and Integrity of Code**
 
-FABRIC exists to make bounded, evidence backed assertions about the **legitimacy, heritage and origin of functions within binaries**. 
+RELIC exists to make bounded, evidence backed assertions about the **legitimacy, heritage and origin of functions within binaries**.
 
 It combines BSim data, FIDBF records, reproducible provenance and a small supporting layer of machine learning. 
 
@@ -12,7 +12,7 @@ Initial corpus I hope to be nearly every C library, HPC willing. Primarily I'm g
 
 ## Bounding bounded assertion means
 
-An assertion made through FABRIC is limited by:
+An assertion made through RELIC is limited by:
 
 - the coverage and quality of the corpus;
 - the provenance of the submitted data;
@@ -25,7 +25,7 @@ The system should preserve the evidence behind an assertion so that another anal
 
 ## Evidence
 
-FABRIC brings together:
+RELIC brings together:
 
 - **BSim** objects describing function-level similarity;
 - **FIDBF** objects associated with analysed binaries;
@@ -37,7 +37,7 @@ FABRIC brings together:
 
 ## Current status
 
-FABRIC is an early proof of concept.
+RELIC is an early proof of concept.
 
 The repository currently contains:
 
@@ -108,9 +108,9 @@ Do not commit:
 
 Approved changes are merged into `main`.
 
-The server updater fetches and fast-forwards the shared checkout at `/srv/fabric`. It refuses to run as a non-root user or when the server checkout contains uncommitted changes.
+The server updater fetches and fast-forwards the shared checkout at `/srv/relic`. It refuses to run as a non-root user or when the server checkout contains uncommitted changes.
 
 ## Licence
 
-FABRIC is licensed under the Apache License 2.0. See
+RELIC is licensed under the Apache License 2.0. See
 [`LICENSE`](LICENSE).

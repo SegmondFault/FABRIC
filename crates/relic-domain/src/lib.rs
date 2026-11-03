@@ -1,4 +1,4 @@
-//! Foundational FABRIC domain types.
+//! Foundational RELIC domain types.
 //!
 //! FIDBF files are opaque server-side objects. Analysts submit their metadata
 //! and function columns; this crate validates the values before persistence.

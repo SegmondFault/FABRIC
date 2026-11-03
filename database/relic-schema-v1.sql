@@ -1,4 +1,4 @@
--- FABRIC (Function and Binary Reproducibility & Integrity Corpus), version 1.
+-- RELIC (Reproducible Evidence for Lineage and Integrity of Code), version 1.
 -- PostgreSQL 15+.
 --
 -- Trust model:

@@ -7,19 +7,19 @@ if (( EUID != 0 )); then
     exit 1
 fi
 
-fabric_dir="${FABRIC_DIR:-/srv/fabric}"
+relic_dir="${RELIC_DIR:-/srv/relic}"
 
-if [[ ! -d "$fabric_dir/.git" ]]; then
-    echo "FABRIC is not checked out at $fabric_dir" >&2
+if [[ ! -d "$relic_dir/.git" ]]; then
+    echo "RELIC is not checked out at $relic_dir" >&2
     exit 1
 fi
 
-if [[ -n "$(git -C "$fabric_dir" status --porcelain)" ]]; then
-    echo "Refusing to update: $fabric_dir has uncommitted changes." >&2
+if [[ -n "$(git -C "$relic_dir" status --porcelain)" ]]; then
+    echo "Refusing to update: $relic_dir has uncommitted changes." >&2
     exit 1
 fi
 
-git -C "$fabric_dir" fetch origin main
-git -C "$fabric_dir" merge --ff-only origin/main
+git -C "$relic_dir" fetch origin main
+git -C "$relic_dir" merge --ff-only origin/main
 
-echo "FABRIC is up to date at $(git -C "$fabric_dir" rev-parse --short HEAD)."
+echo "RELIC is up to date at $(git -C "$relic_dir" rev-parse --short HEAD)."
